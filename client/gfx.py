@@ -29,6 +29,10 @@ def mouse(button,state,x,y):
 			glFlush()
 	
 
+def motion(x,y):
+	drawDot(x,y)
+	glFlush()
+
 def render():
 	glClear(GL_COLOR_BUFFER_BIT)
 	print "Im in render()"
