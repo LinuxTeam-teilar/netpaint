@@ -31,16 +31,28 @@ def mouse(button,state,x,y):
 
 def render():
 	glClear(GL_COLOR_BUFFER_BIT)
+	print "Im in render()"
 	try:
 		CliData,CliAddr = net.CliSocket.recvfrom(buf)
 		stext = CliData.split(".")
 		x = int(stext[0])
 		y = int(stext[1])
 		drawDotStatic(x,y)
-		rdata = 'I GOT: %(X)d.%(Y)d' % {'X':x,'Y':y}
+		rdata = 'Got: %(X)d.%(Y)d' % {'X':x,'Y':y}
 		print rdata
 	except:
+		print "Got Nothing!"
 		pass
 	glFlush()
 	
-
+def idle():
+	glutSwapBuffers()
+	while(1):
+		CliData,CliAddr = net.CliSocket.recvfrom(buf)
+		stext = CliData.split(".")
+		x = int(stext[0])
+		y = int(stext[1])
+		drawDotStatic(x,y)
+		rdata = 'Got: %(X)d.%(Y)d' % {'X':x,'Y':y}
+		print rdata
+		glutSwapBuffers()

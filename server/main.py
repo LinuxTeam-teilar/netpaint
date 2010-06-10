@@ -1,19 +1,10 @@
-from socket import *
 import net
 
-SrvSocket = socket(AF_INET,SOCK_DGRAM)
 buf = 1024
 party = []
 
-SrvIP = raw_input("IP Address to bind: ")
-SrvPort = raw_input("Port to bind: ")
-
-SrvAddr = (SrvIP,int(SrvPort))
-
-SrvSocket.bind(SrvAddr)
-
 while 1:
-	CliData,CliAddr = SrvSocket.recvfrom(buf)
+	CliData,CliAddr = net.SrvSocket.recvfrom(buf)
 	net.insertParty(CliAddr,party)
 	if not CliData:
 		net.removeParty(CliAddr,party)
@@ -26,4 +17,4 @@ while 1:
 		
 		
 
-SrvSocket.close()
+net.SrvSocket.close()

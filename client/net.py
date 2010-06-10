@@ -8,4 +8,4 @@ CliSocket = socket(AF_INET,SOCK_DGRAM)
 CliSocket.setblocking(0)
 SrvAddr = (SrvIP,SrvPort)
 
-CliSocket.settimeout(0.2)
+CliSocket.settimeout(0.3)
