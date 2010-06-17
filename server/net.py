@@ -10,7 +10,7 @@ SrvSocket.bind(SrvAddr)
 
 def insertParty(value,party):
 	try:
-		if not(value in party):
+		if value not in party:
 			print "Registering",value[0],"..."
 			party.append(value)
 			print "Added",value[0],"to current party."
@@ -30,6 +30,5 @@ def deleteParty(value,party):
 def broadcastExcept(data,client,party):
 	print "Broadcasting..."
 	for member in party:
-		#if member[0] != client[0]:
-			ss = SrvSocket.sendto(data,member)
-			print "Sent",ss,"byte of data to",member[0],"!"
+		ss = SrvSocket.sendto(data,member)
+		print "Sent",ss,"byte of data to",member[0],"!"

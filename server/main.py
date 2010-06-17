@@ -1,6 +1,6 @@
 import net
 
-buf = 1024
+buf = 15000
 party = []
 
 while 1:
