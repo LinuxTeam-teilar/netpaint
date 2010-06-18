@@ -2,7 +2,8 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
 import string
-import dbus
+import pickle
+import select
 import net
 
 buf = 1024
@@ -14,12 +15,10 @@ c_s = 2
 renderTree = []
 netTree = []
 
-session_bus = dbus.SessionBus()
-
 def drawDot(x,y):
-	global c_r,c_g,c_b
+	global c_r,c_g,c_b,c_s
 	glColor3f(c_r,c_g,c_b)
-	glPointSize(3)
+	glPointSize(c_s)
 	glBegin(GL_POINT)
 	glVertex2i(x,600-y)
 	glEnd()
@@ -27,21 +26,22 @@ def drawDot(x,y):
 	if(net.CliSocket.sendto(data,net.SrvAddr)):
 		print "Data sent!"
 	
-def drawDotStatic(x,y,tr,tg,tb):
+def drawDotStatic(x,y,tr,tg,tb,ts):
 	glColor3f(tr,tg,tb)
-	glPointSize(3)
+	glPointSize(ts)
 	glBegin(GL_POINT)
 	glVertex2i(x,600-y)
 	glEnd()
 
 def mouse(button,state,x,y):
-	global netTree,c_r,c_g,c_b
+	global netTree,c_r,c_g,c_b,c_s
 	if state==GLUT_DOWN:
 		if button==GLUT_LEFT_BUTTON:
-			drawDotStatic(x,y,c_r,c_g,c_b)
-			glFlush()
+				drawDotStatic(x,y,c_r,c_g,c_b,c_s)
+				count=0
+				glFlush()
 	elif state==GLUT_UP:
-		data = str(netTree)
+		data = pickle.dumps(netTree)
 		if net.CliSocket.sendto(data,net.SrvAddr)>0:
 			print "Sent data to server!"
 			netTree=[]
@@ -49,7 +49,7 @@ def mouse(button,state,x,y):
 
 def motion(x,y):
 	global renderTree,netTree,c_r,c_g,c_b,c_s
-	drawDotStatic(x,y,c_r,c_g,c_b)
+	drawDotStatic(x,y,c_r,c_g,c_b,c_s)
 	if [x,y,c_r,c_g,c_b] not in renderTree or netTree:
 		netTree.append([x,y,c_r,c_g,c_b,c_s])
 		renderTree.append([x,y,c_r,c_g,c_b,c_s])
@@ -101,3 +101,13 @@ def idle():
 	#rdata = 'Got: %(X)d.%(Y)d.%(1)f.%(2)f.%(3)f' % {'X':x,'Y':y,'1':tr,'2':tg,'3':tb}
 	#print rdata
 	glutSwapBuffers()
+
+def nethandle():
+	global renderTree
+	SrvData,SrvAddr = net.CliSocket.recvfrom(buf)
+	if data>0:
+		print "I got some data..."
+	data = pickle.loads(SrvData)
+	for x in data:
+		if x not in renderTree:
+			renderTree.append(x)

@@ -5,7 +5,6 @@ from OpenGL.GLUT import *
 import gfx
 
 
-
 glutInit()
 glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
 glutInitWindowSize(800,600)
@@ -14,6 +13,7 @@ glClearColor(1.0,1.0,1.0,1.0)
 glMatrixMode(GL_PROJECTION)
 glLoadIdentity()
 gluOrtho2D(0.0,800.0,0,600.0)
+glutSetCursor(GLUT_CURSOR_SPRAY)
 glutDisplayFunc(gfx.render)
 glutMouseFunc(gfx.mouse)
 glutMotionFunc(gfx.motion)
